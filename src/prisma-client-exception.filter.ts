@@ -19,6 +19,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         message = exception.message.replace(/\n/g, "")
         if (message.includes("email")) {
           response.status(status).send({ status, message: "that email is already registered" })
+          return
         }
         response.status(status).send({ status, message })
         break;

@@ -11,7 +11,9 @@ export class UsersService {
   }
   async create(createUserDto: CreateUserDto) {
 
-    pass.hashPassword(createUserDto.password).then(newPass => createUserDto.password = newPass)
+
+    const newPass = await pass.hashPassword(createUserDto.password)
+    createUserDto.password = newPass
 
     return await this.repository.user.create({ data: createUserDto })
   }
@@ -29,8 +31,11 @@ export class UsersService {
     return this.repository.user.findUnique({ where: { email } });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
+      const newPass = await pass.hashPassword(updateUserDto.password)
+      updateUserDto.password = newPass
+
 
       pass.hashPassword(updateUserDto.password).then(newPass => updateUserDto.password = newPass)
     }
