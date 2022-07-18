@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
+import { UniqueUserParams } from './dto/uniqueUserParams';
 
 @ApiTags("Users")
 @Controller('users')
@@ -27,6 +28,12 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity })
   async findOne(@Param('id') id: string) {
     return new UserEntity(await this.usersService.findOne(+id));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: UserEntity })
+  async findByEmail(@Param() params: UniqueUserParams) {
+    return new UserEntity(await this.usersService.findByEmail(params.email));
   }
 
   @Patch(':id')

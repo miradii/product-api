@@ -6,7 +6,7 @@ export class UserEntity implements User {
 
     id: number
 
-    @ApiProperty({ required: true })
+    @ApiProperty({ required: true, description: "users full name", minLength: 5, maxLength: 100 })
     name: string
 
     @ApiProperty({

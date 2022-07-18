@@ -3,6 +3,7 @@ import { IsEmail, IsNotEmpty, MaxLength, MinLength } from "class-validator"
 
 export class CreateUserDto {
     @IsNotEmpty({ message: "name can not be empty" })
+    @MinLength(5, { message: "that name is too short" })
     @MaxLength(100, { message: "that name is too long" })
     @ApiProperty({ required: true })
     name: string
