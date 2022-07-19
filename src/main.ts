@@ -11,7 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Products API')
     .setDescription('A simple Rest API in Nest')
-    .setVersion('1.0')
+    .setVersion('1.0').addBearerAuth()
     .build();
 
   // binds ValidationPipe to the entire application
