@@ -4,7 +4,7 @@ import { SignUpDTO } from 'src/auth/dtos/signup.dto';
 import { SignUpService } from 'src/auth/services/signup/signup.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 
-ApiTags('SignUp')
+@ApiTags('Auth')
 @Controller('signup')
 export class SignupController {
     constructor(private readonly signupService: SignUpService) {

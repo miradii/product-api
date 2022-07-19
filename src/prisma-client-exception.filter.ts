@@ -13,15 +13,27 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     let message: string;
     switch (exception.code) {
 
+      case 'P2000':
+        status = HttpStatus.BAD_REQUEST;
+        message = "the input value is too long for that field";
+        response.status(status).send({ status, message });
+        break;
+
+      case 'P2025':
+        status = HttpStatus.NOT_FOUND;
+        message = "the record you specified was not found"
+        response.status(status).send({ status, message })
+        break;
+
       // unique constraint error
       case 'P2002':
-        status = HttpStatus.CONFLICT
-        message = exception.message.replace(/\n/g, "")
+        status = HttpStatus.CONFLICT;
+        message = exception.message.replace(/\n/g, "");
         if (message.includes("email")) {
-          response.status(status).send({ status, message: "that email is already registered" })
-          return
+          response.status(status).send({ status, message: "that email is already registered" });
+          break;
         }
-        response.status(status).send({ status, message })
+        response.status(status).send({ status, message });
         break;
       default:
         super.catch(exception, host)
