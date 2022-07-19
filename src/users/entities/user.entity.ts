@@ -20,6 +20,9 @@ export class UserEntity implements User {
     @ApiProperty({ required: true, minLength: 6, maxLength: 100 })
     password: string
 
+    @Exclude()
+    currentRefreshToken: string
+
 
     constructor(partial: Partial<UserEntity>) {
         Object.assign(this, partial);

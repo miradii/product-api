@@ -45,4 +45,12 @@ export class UsersService {
   remove(id: number) {
     return this.repository.user.delete({ where: { id } });
   }
+
+  setCurrentRefreshToken(id: number, refreshToekn: string) {
+    console.log("setting refresh token on user", refreshToekn)
+    return this.repository.user.update({ where: { id }, data: { currentRefreshToken: refreshToekn } });
+  }
+  removeCurrentRefreshToken(id: number) {
+    return this.repository.user.update({ where: { id }, data: { currentRefreshToken: null } });
+  }
 }

@@ -13,6 +13,8 @@ import { Strategy } from 'passport-jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { RefreshService } from './services/refresh/refresh.service';
 import { RefreshController } from './controllers/refresh/refresh.controller';
+import { LogoutController } from './controllers/logout/logout.controller';
+import { LogoutService } from './services/logout/logout.service';
 
 
 @Module({
@@ -23,8 +25,8 @@ import { RefreshController } from './controllers/refresh/refresh.controller';
     }),
     inject: [ConfigService],
   })],
-  controllers: [SignupController, LoginController, RefreshController],
-  providers: [LoginService, SignUpService, UsersService, ConfigService, AuthService, RefreshService, JwtStrategy],
+  controllers: [SignupController, LoginController, RefreshController, LogoutController],
+  providers: [LoginService, SignUpService, UsersService, ConfigService, AuthService, RefreshService, JwtStrategy, LogoutService],
   exports: [AuthService]
 })
 export class AuthModule { }

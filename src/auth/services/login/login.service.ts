@@ -16,7 +16,7 @@ export class LoginService {
 
 
 
-    async loginService(loginCandidate: LoginUserDto) {
+    async loginUser(loginCandidate: LoginUserDto) {
         let user = await this.userService.findByEmail(loginCandidate.email)
         if (!user) {
             throw new HttpException("that email is not registered", HttpStatus.NOT_FOUND)
@@ -28,9 +28,13 @@ export class LoginService {
             throw new UnauthorizedException("Invalid Password")
         }
 
+        const accessToken = this.jwtService.sign({ userId: user.id }, { secret: this.configService.get('jwt.secret'), expiresIn: '30s' })
+        const refreshToken = this.jwtService.sign({ userId: user.id }, { secret: this.configService.get('jwt.refreshSecret'), expiresIn: '30d' })
+        await this.userService.setCurrentRefreshToken(user.id, refreshToken);
+
         return {
-            accessToken: this.jwtService.sign({ userId: user.id }, { secret: this.configService.get('jwt.secret'), expiresIn: '60s' }),
-            refreshToken: this.jwtService.sign({ userId: user.id }, { secret: this.configService.get('jwt.refreshSecret'), expiresIn: '30d' })
+            accessToken,
+            refreshToken,
         }
 
 
