@@ -3,7 +3,7 @@ import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { SetMainImageDto } from './dto/set-main-image.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags("Images")
 @Controller('images')
@@ -19,12 +19,14 @@ export class ImagesController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
 
-  @ApiOkResponse({ description: "a pre generated url for uploading images to arvancloud" })
+
+  @ApiOperation({ description: "get a url for uploading one image" })
   async signeUrl() {
     return await this.imagesService.getUrl();
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: "add the url of uploaded image" })
   @ApiBearerAuth()
   @Post("")
   async createImage(@Body() createImageDto: CreateImageDto) {
@@ -33,6 +35,7 @@ export class ImagesController {
 
 
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: "set the image specified in the body as the main image for product" })
   @ApiBearerAuth()
   @Put('/main/')
   findOne(@Body() setMainDto: SetMainImageDto) {

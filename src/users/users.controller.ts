@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGua
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 import { UniqueUserParams } from './dto/uniqueUserParams';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
@@ -14,6 +14,8 @@ export class UsersController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+
+  @ApiOperation({ description: "Create new user" })
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: "user created succesfully", type: UserEntity })
   create(@Body() createUserDto: CreateUserDto) {
@@ -22,6 +24,7 @@ export class UsersController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: "Get all the users" })
   @ApiBearerAuth()
   @ApiOkResponse({ type: [UserEntity] })
   async findAll() {
@@ -31,6 +34,7 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: "Get a user by id" })
   @ApiBearerAuth(":id")
   @ApiParam({ name: "id", type: "int", description: "database generated user id" })
   @ApiOkResponse({ type: UserEntity })
@@ -42,6 +46,7 @@ export class UsersController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: "update the user with specified id" })
   @ApiBearerAuth()
   @ApiCreatedResponse({ description: "user updated succesfully", type: UserEntity })
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
@@ -51,6 +56,7 @@ export class UsersController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: "delete the user with specified id" })
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async remove(@Param('id', ParseIntPipe) id: number) {
