@@ -1,6 +1,8 @@
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { LogoutService } from 'src/auth/services/logout/logout.service';
 
+@ApiTags("Auth")
 @Controller('logout')
 export class LogoutController {
     constructor(private readonly logoutService: LogoutService) {
