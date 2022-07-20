@@ -30,6 +30,7 @@
     "@nestjs/swagger": "^6.0.4",
     "@ntegral/nestjs-s3": "^1.0.3",
     "@prisma/client": "^4.0.0",
+    "@types/aws-sdk": "^2.7.0",
     "aws-sdk": "^2.1178.0",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",

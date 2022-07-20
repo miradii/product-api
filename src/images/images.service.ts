@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { S3Service } from '@ntegral/nestjs-s3';
-import { randomUUID } from "crypto"
 import { CreateImageDto } from './dto/create-image.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { deleteObject, genereateImageUrl, setObjectAcl } from 'src/utils/s3Utils';
 
 @Injectable()
 export class ImagesService {
@@ -13,77 +13,23 @@ export class ImagesService {
 
   }
 
-  private setUpCors() {
-    return new Promise((resolve, reject) => {
 
-      const cors = {
-        Bucket: 'vitonut', // REQUIRED
-        CORSConfiguration: {
-          // REQUIRED
-          CORSRules: [
-            // REQUIRED
-            {
-              AllowedHeaders: ['*'],
-              AllowedMethods: ['PUT'], // REQUIRED
-              AllowedOrigins: ['http://localhost:8080',], // REQUIRED
-            },
-          ],
-        },
-      };
-      this.s3Service.putBucketCors(cors, (err, data) => {
-        if (err) {
-          reject(new Error("unable to enable cors"))
-        } else {
-          console.log("cors setup for image upload completed")
-          resolve(true);
-        }
-      })
-    })
+  async getUrl() {
+    return await genereateImageUrl(this.s3Service)
   }
-
-  private setObjectAcl(key: string) {
-    return new Promise((resolve, reject) => {
-      this.s3Service.putObjectAcl({
-        Bucket: 'protucts-moart',
-        ACL: 'public-read',
-        Key: key,
-      }, (err, data) => {
-        if (err) reject(new Error(err.message))
-        resolve(data)
-      })
-    })
-  }
-
-  private deleteObject(key) {
-    return new Promise((resolve, reject) => {
-      this.s3Service.deleteObject({
-        Bucket: 'products-read',
-        Key: key
-      }, (err, data) => {
-        if (err) reject(new Error(err.message))
-        resolve(data);
-      })
-
-    })
-  }
-
-  async genereatePresignedUrl() {
-    await this.setUpCors()
-    const key = `${randomUUID()}.jpeg`
-    const url = await this.s3Service.getSignedUrl(
-      'putObject',
-      {
-        Bucket: 'products-moart',
-        ContentType: 'image/jpeg',
-        Key: key,
-      })
-
-    return { key, url }
-  }
-
 
   async addImage(createImageDto: CreateImageDto) {
-    return await this.prismaService.image.create({ data: { product: { connect: { id: createImageDto.product_id } }, url: createImageDto.url, } })
+
+    setObjectAcl(createImageDto.key, this.s3Service)
+    return await this.prismaService.image.create(
+      {
+        data:
+        {
+          product:
+            { connect: { id: createImageDto.product_id } },
+          url: createImageDto.url,
+        }
+      })
   }
 
 
@@ -92,10 +38,16 @@ export class ImagesService {
     return await this.prismaService.image.update({ data: { preview: true }, where: { id: imageId } })
   }
 
-  getAllImagesForProuct(productId: string) {
-    return this.prismaService.image.findMany({ where: { product_id: productId } });
+  async getAllImagesForProuct(productId: string) {
+    return await this.prismaService.image.findMany({ where: { product_id: productId } });
   }
-  remove(id: string) {
-    return this.prismaService.image.delete({ where: { id } });
+  async remove(id: string) {
+    const image = await this.prismaService.image.findUnique({ where: { id } });
+    if (!image) {
+      throw new NotFoundException("that image does not exist")
+    }
+    const imageS3Key = image.url.split('/')[3]
+    deleteObject(imageS3Key, this.s3Service)
+    return await this.prismaService.image.delete({ where: { id } });
   }
 }
