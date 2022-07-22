@@ -14,7 +14,7 @@ const uploadConfig = curry((bucket: string, contentType: string, key: string) =>
 }))
 
 const bucketUploadConfig = uploadConfig("products-moart")
-const imageUploadConfig = bucketUploadConfig("products-moart")
+const imageUploadConfig = bucketUploadConfig("image/jpeg")
 
 export async function genereateImageUrl(s3Service: S3Service) {
     await setUpCors(s3Service)
@@ -27,8 +27,8 @@ export async function genereateImageUrl(s3Service: S3Service) {
 export async function deleteObject(objectName, s3Service: S3Service) {
     await setUpCors(s3Service)
     return new Promise((resolve, reject) => {
-        this.s3Service.deleteObject({
-            Bucket: 'products-read',
+        s3Service.deleteObject({
+            Bucket: 'products-moart',
             Key: objectName
         }, (err, data) => {
             if (err) reject(new Error(err.message))
@@ -47,7 +47,7 @@ const corsConfig = {
             {
                 AllowedHeaders: ['*'],
                 AllowedMethods: ['PUT'], // REQUIRED
-                AllowedOrigins: ['http://localhost:8080',], // REQUIRED
+                AllowedOrigins: ['http://localhost:3000',], // REQUIRED
             },
         ],
     },

@@ -21,12 +21,12 @@ export class RefreshService {
             const user = await this.userService.findOne(Number(userId))
 
             if (user.currentRefreshToken !== oldRefreshToken) {
-                throw new UnauthorizedException("invalid refresh token")
+                throw new UnauthorizedException("your session has expired")
             }
 
             const accessToken = this.jwtService.sign({ userId }, { secret: this.configService.get('jwt.secret'), expiresIn: '60s' })
             const refreshToken = this.jwtService.sign({ userId }, { secret: this.configService.get('jwt.refreshSecret'), expiresIn: '30d' })
-            this.userService.setCurrentRefreshToken(Number(userId), refreshToken);
+            await this.userService.setCurrentRefreshToken(Number(userId), refreshToken);
 
             return {
                 accessToken,

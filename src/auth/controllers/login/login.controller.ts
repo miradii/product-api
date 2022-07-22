@@ -7,7 +7,6 @@ import { AuthEntity } from 'src/auth/entities/auth.entity';
 import { LoginEntity } from 'src/auth/entities/login.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 import { LoginService } from 'src/auth/services/login/login.service';
-import { UserEntity } from 'src/users/entities/user.entity';
 
 @ApiTags("Auth")
 @Controller('login')
@@ -38,10 +37,8 @@ export class LoginController {
         const jwt = req.headers['authorization'].split(" ")[1]
         const payload = this.jwtService.decode(jwt)
 
-
         const user = await this.loginService.findAuthenticatedUserById(Number(payload['userId']))
         return new LoginEntity(user);
-        return user
     }
 
 

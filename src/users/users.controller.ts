@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiPara
 import { UserEntity } from './entities/user.entity';
 import { UniqueUserParams } from './dto/uniqueUserParams';
 import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
+import { ExtractJwt } from 'passport-jwt';
 
 @ApiTags("Users")
 @Controller('users')

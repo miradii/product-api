@@ -16,25 +16,25 @@ export class ProductsService {
   }
 
   async findAll() {
-    return await this.prismaService.product.findMany()
+    return await this.prismaService.product.findMany({ include: { Image: true } })
   }
 
   async findAllByCategory(categoryId: number) {
-    return await this.prismaService.product.findMany({ where: { category_id: categoryId } })
+    return await this.prismaService.product.findMany({ where: { category_id: categoryId }, include: { Image: true } })
   }
 
   async findOne(id: string) {
-    const product = await this.prismaService.product.findUnique({ where: { id } })
+    const product = await this.prismaService.product.findUnique({ where: { id }, include: { Image: true } })
     if (!product)
       throw new HttpException("that product does not exist", HttpStatus.NOT_FOUND);
     return product;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    return this.prismaService.product.update({ data: updateProductDto, where: { id } })
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    return await this.prismaService.product.update({ data: updateProductDto, where: { id }, include: { Image: true } })
   }
 
-  remove(id: string) {
-    return this.prismaService.product.delete({ where: { id } });
+  async remove(id: string) {
+    return await this.prismaService.product.delete({ where: { id } });
   }
 }

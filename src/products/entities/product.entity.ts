@@ -1,6 +1,7 @@
-import { Prisma, Product } from ".prisma/client"
+import { Prisma, Product, Image } from ".prisma/client"
 import { ApiProperty } from "@nestjs/swagger"
 import { Transform } from "class-transformer"
+import { ImageEntity } from "src/images/entities/image.entity"
 
 export class ProductEntity implements Product {
 

@@ -42,12 +42,14 @@ export class ImagesService {
     return await this.prismaService.image.findMany({ where: { product_id: productId } });
   }
   async remove(id: string) {
+    console.log(id)
     const image = await this.prismaService.image.findUnique({ where: { id } });
     if (!image) {
       throw new NotFoundException("that image does not exist")
     }
-    const imageS3Key = image.url.split('/')[3]
-    deleteObject(imageS3Key, this.s3Service)
+    const imageName = image.url.split('/')[3]
+    console.log(imageName)
+    deleteObject(imageName, this.s3Service)
     return await this.prismaService.image.delete({ where: { id } });
   }
 }
