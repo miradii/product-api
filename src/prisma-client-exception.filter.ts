@@ -30,10 +30,10 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         status = HttpStatus.CONFLICT;
         message = exception.message.replace(/\n/g, "");
         if (message.includes("email")) {
-          response.status(status).send({ status, message: "that email is already registered" });
+          response.status(status).send({ status, message: ["that email is already registered"] });
           break;
         } else if (message.includes("name")) {
-          response.status(status).send({ status, message: "that name already exists" });
+          response.status(status).send({ status, message: ["that name already exists"] });
           break;
         }
         response.status(status).send({ status, message });

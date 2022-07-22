@@ -5,16 +5,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { PrismaClientExceptionFilter } from './prisma-client-exception.filter';
 import helmet from "helmet";
-import * as csurf from 'csurf';
-import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Configure Swagger
   app.use(helmet())
   app.enableCors()
-  app.use(cookieParser())
-  app.use(csurf({ cookie: true }))
   const config = new DocumentBuilder()
     .setTitle('Products API')
     .setDescription('A simple Rest API in Nest')
@@ -22,7 +18,7 @@ async function bootstrap() {
     .build();
 
   // binds ValidationPipe to the entire application
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true, stopAtFirstError: true, validationError: { target: true } }));
 
   //  apply transform to all responses
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));

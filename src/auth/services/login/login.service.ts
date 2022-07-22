@@ -7,13 +7,16 @@ import { comparePassword } from 'src/utils/passwordUtils';
 
 @Injectable()
 export class LoginService {
+
     constructor(private readonly userService: UsersService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService
     ) {
 
     }
-
+    async findAuthenticatedUserById(id: number) {
+        return await this.userService.findOne(id)
+    }
 
 
     async loginUser(loginCandidate: LoginUserDto) {
@@ -36,6 +39,7 @@ export class LoginService {
             accessToken,
             refreshToken,
         }
+
 
 
     }

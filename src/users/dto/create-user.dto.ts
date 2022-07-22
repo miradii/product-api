@@ -8,8 +8,8 @@ export class CreateUserDto {
     @ApiProperty({ required: true })
     name: string
 
-    @IsEmail()
     @IsNotEmpty({ message: "email cannot be empty" })
+    @IsEmail()
     @MaxLength(50)
     @ApiProperty({
         required: true,
@@ -18,9 +18,9 @@ export class CreateUserDto {
     })
     email: string
 
+    @IsNotEmpty({ message: "password cannot be empty" })
     @MinLength(6, { message: "the minimum length for password is 6" })
     @MaxLength(100)
-    @IsNotEmpty({ message: "password cannot be empty" })
     @ApiProperty({ required: true, minLength: 6, maxLength: 100 })
     password: string
 }
