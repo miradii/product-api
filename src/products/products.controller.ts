@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProductEntity } from './entities/product.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth-guard';
 
 @ApiTags("Products")
 @Controller('products')
@@ -17,6 +18,8 @@ export class ProductsController {
   }
 
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ description: "Get the list of all products" })
   @ApiOkResponse({ description: "returns all of the products", type: [ProductEntity] })
   @Get()
@@ -24,6 +27,8 @@ export class ProductsController {
     return (await this.productsService.findAll()).map(prod => new ProductEntity(prod));
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ description: "Get a product by Id" })
   @ApiOkResponse({ type: ProductEntity })
   @Get(':id')
@@ -31,6 +36,8 @@ export class ProductsController {
     return new ProductEntity(await this.productsService.findOne(id));
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ description: "Get all products in the specified category" })
   @ApiOkResponse({ type: [ProductEntity] })
   @Get('/category/:id')
@@ -38,6 +45,8 @@ export class ProductsController {
     return (await this.productsService.findAllByCategory(id)).map(prod => new ProductEntity(prod));
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ description: "Update the product with the specified id" })
   @ApiOkResponse({ type: ProductEntity })
   @Patch(':id')
@@ -46,6 +55,8 @@ export class ProductsController {
   }
 
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ description: "Delete the product with the specified id" })
   @Delete(':id')
   remove(@Param('id') id: string) {

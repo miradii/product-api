@@ -47,7 +47,7 @@ const corsConfig = {
             {
                 AllowedHeaders: ['*'],
                 AllowedMethods: ['PUT'], // REQUIRED
-                AllowedOrigins: ['http://localhost:3000',], // REQUIRED
+                AllowedOrigins: ['http://localhost:3000', "https://moart-prod-client.herokuapp.com"], // REQUIRED
             },
         ],
     },
